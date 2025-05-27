@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody _rigibody;
+    private PlayerStatus _player;
 
     [Header("Mouse Config")]
     [SerializeField][Range(0, 5)] private float _mouseSensitivity = 1;
@@ -15,12 +15,21 @@ public class PlayerController : MonoBehaviour
 
     private void Init()
     {
-        _rigibody = GetComponent<Rigidbody>();
+        _player = GetComponent<PlayerStatus>();
+    }
+    private void Update()
+    {
+        setMove();
+    }
+    private void setMove()
+    {
+        _player.Rigid.velocity = new Vector3(-InputDirection.y * _player.MoveSpeed, _player.Rigid.velocity.y, InputDirection.x * _player.MoveSpeed);
     }
 
     public void OnMove(InputValue value)
     {
-        InputDirection = value.Get<Vector2>();
+        InputDirection = value.Get<Vector2>().normalized;
+
     }
 
     public void OnRotate(InputValue value)
