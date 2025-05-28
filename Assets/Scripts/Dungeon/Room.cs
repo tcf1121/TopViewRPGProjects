@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Room : MonoBehaviour
 {
@@ -8,7 +10,30 @@ public class Room : MonoBehaviour
     [SerializeField] public Vector2Int RoomPos;
     [SerializeField] public GameObject[] DoorWall;
     [SerializeField] public GameObject[] NoDoorWall;
+    [SerializeField] public GameObject[] Door;
 
+    public bool isClear;
+    UnityAction<bool> IsClear;
+
+    private void OnEnable()
+    {
+        IsClear += Clear;
+    }
+
+    private void OnDisable()
+    {
+        IsClear -= Clear;
+    }
+
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isClear = !isClear;
+            IsClear.Invoke(isClear);
+        }
+    }
 
     public Room(RoomType roomType, Vector2Int roomPos)
     {
@@ -51,6 +76,27 @@ public class Room : MonoBehaviour
                 DoorWall[3].SetActive(true);
             }
     }
+
+    public void Clear(bool Clear)
+    {
+        if (Clear)
+        {
+            foreach (GameObject wall in DoorWall)
+            {
+                if (wall.activeSelf)
+                    Door[Array.IndexOf(DoorWall, wall)].SetActive(false);
+            }
+        }
+        else
+        {
+            foreach (GameObject wall in DoorWall)
+            {
+                if (wall.activeSelf)
+                    Door[Array.IndexOf(DoorWall, wall)].SetActive(true);
+            }
+        }
+    }
+
 }
 
 public enum RoomType

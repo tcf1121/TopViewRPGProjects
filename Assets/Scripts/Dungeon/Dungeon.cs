@@ -93,19 +93,19 @@ public class Dungeon : MonoBehaviour
     private Room CreateRoom(Vector2Int roompos, bool start = false)
     {
         GameObject newRoom = Instantiate(_roomPrefab, transform);
-        _roomArray[roompos.x, roompos.y] = gameObject.AddComponent<Room>();
+
         if (start)
         {
-            _roomArray[roompos.x, roompos.y].SetRoom(RoomType.Normal, roompos);
+            newRoom.GetComponent<Room>().RoomType = RoomType.Normal;
         }
         else
         {
             int rand = Random.Range(0, _roomTypes.Count);
-            _roomArray[roompos.x, roompos.y].SetRoom(_roomTypes[rand], roompos);
+            newRoom.GetComponent<Room>().RoomType = _roomTypes[rand];
             _roomTypes.RemoveAt(rand);
         }
         newRoom.GetComponent<Room>().RoomPos = roompos;
-        newRoom.GetComponent<Room>().RoomType = _roomArray[roompos.x, roompos.y].RoomType;
+        _roomArray[roompos.x, roompos.y] = newRoom.GetComponent<Room>();
         newRoom.transform.position = new Vector3(roompos.y * _roomheight, 0, roompos.x * _roomWidth);
 
         _dungeonRoomList.Add(newRoom);
