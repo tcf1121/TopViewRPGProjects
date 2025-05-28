@@ -13,6 +13,9 @@ public class PlayerStatus : MonoBehaviour
     public float JumpPower { get; set; }
 
     [field: SerializeField]
+    [field: Range(0, 10)]
+    public float DashPower { get; set; }
+    [field: SerializeField]
     [field: Range(0, 500)]
     public int MaxHP { get; set; }
 
@@ -20,4 +23,18 @@ public class PlayerStatus : MonoBehaviour
     public Vector2 InputDirection;
     public Rigidbody Rigid;
     public Animator Animator;
+
+    public bool IsJump;
+    public bool[] IsDoing = new bool[7];
+}
+
+public enum doName
+{
+    Dash,
+    Skill1,
+    Skill2,
+    Skill3,
+    Num1,
+    Num2,
+    Num3
 }
