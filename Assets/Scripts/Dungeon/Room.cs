@@ -7,10 +7,11 @@ using UnityEngine.Events;
 public class Room : MonoBehaviour
 {
     [SerializeField] public RoomType RoomType;
+    [SerializeField] public Material[] RoomMaterial;
     [SerializeField] public Vector2Int RoomPos;
     [SerializeField] public GameObject[] DoorWall;
     [SerializeField] public GameObject[] NoDoorWall;
-    [SerializeField] public GameObject[] Door;
+    [SerializeField] private Door[] _doors;
 
     public bool isClear;
     UnityAction<bool> IsClear;
@@ -41,39 +42,41 @@ public class Room : MonoBehaviour
         RoomPos = roomPos;
     }
 
-    public void SetRoom(RoomType roomType, Vector2Int roomPos)
+    public void SetDoor(Vector2Int roomPos)
     {
-        RoomType = roomType;
-        RoomPos = roomPos;
+        foreach (Door door in _doors)
+        {
+            door.SetDoor(roomPos);
+        }
     }
 
     public void LinkedRoom(Room[,] rooms)
     {
         if (RoomPos.y - 1 > 0)
-            if (rooms[RoomPos.x, RoomPos.y - 1] != null)
+            if (rooms[RoomPos.x, RoomPos.y - 1] == null)
             {
-                NoDoorWall[0].SetActive(false);
-                DoorWall[0].SetActive(true);
+                NoDoorWall[0].SetActive(true);
+                DoorWall[0].SetActive(false);
             }
 
         if (RoomPos.y + 1 < 20)
-            if (rooms[RoomPos.x, RoomPos.y + 1] != null)
+            if (rooms[RoomPos.x, RoomPos.y + 1] == null)
             {
-                NoDoorWall[1].SetActive(false);
-                DoorWall[1].SetActive(true);
+                NoDoorWall[1].SetActive(true);
+                DoorWall[1].SetActive(false);
             }
 
         if (RoomPos.x - 1 > 0)
-            if (rooms[RoomPos.x - 1, RoomPos.y] != null)
+            if (rooms[RoomPos.x - 1, RoomPos.y] == null)
             {
-                NoDoorWall[2].SetActive(false);
-                DoorWall[2].SetActive(true);
+                NoDoorWall[2].SetActive(true);
+                DoorWall[2].SetActive(false);
             }
         if (RoomPos.x + 1 < 20)
-            if (rooms[RoomPos.x + 1, RoomPos.y] != null)
+            if (rooms[RoomPos.x + 1, RoomPos.y] == null)
             {
-                NoDoorWall[3].SetActive(false);
-                DoorWall[3].SetActive(true);
+                NoDoorWall[3].SetActive(true);
+                DoorWall[3].SetActive(false);
             }
     }
 
@@ -84,7 +87,7 @@ public class Room : MonoBehaviour
             foreach (GameObject wall in DoorWall)
             {
                 if (wall.activeSelf)
-                    Door[Array.IndexOf(DoorWall, wall)].SetActive(false);
+                    _doors[Array.IndexOf(DoorWall, wall)].SetTrigger(true, RoomMaterial[1]);
             }
         }
         else
@@ -92,7 +95,7 @@ public class Room : MonoBehaviour
             foreach (GameObject wall in DoorWall)
             {
                 if (wall.activeSelf)
-                    Door[Array.IndexOf(DoorWall, wall)].SetActive(true);
+                    _doors[Array.IndexOf(DoorWall, wall)].SetTrigger(false, RoomMaterial[0]);
             }
         }
     }

@@ -6,19 +6,22 @@ using UnityEngine;
 public class Dungeon : MonoBehaviour
 {
     [SerializeField] private GameObject _roomPrefab;
+    [SerializeField] private DungeonPlayer _dgPlayer;
     [SerializeField] private float _roomWidth;
     [SerializeField] private float _roomheight;
     private Room[,] _roomArray = new Room[20, 20];
     private int _roomNum;
     List<RoomType> _roomTypes;
-    List<GameObject> _dungeonRoomList = new();
-    List<Vector2Int> newRoomList = new();
-    List<Vector2Int> RemovedRoomList = new();
+    private List<GameObject> _dungeonRoomList = new();
+    private List<Vector2Int> newRoomList = new();
+    private List<Vector2Int> RemovedRoomList = new();
 
     private void Awake()
     {
         CreateDungeon(1);
         SetLinkedRoom();
+        _dgPlayer.SetRoomArray(_roomArray);
+        _dgPlayer.ChangeRoom(new Vector2Int(10, 10));
     }
 
 
@@ -105,8 +108,10 @@ public class Dungeon : MonoBehaviour
             _roomTypes.RemoveAt(rand);
         }
         newRoom.GetComponent<Room>().RoomPos = roompos;
+        newRoom.GetComponent<Room>().SetDoor(roompos);
         _roomArray[roompos.x, roompos.y] = newRoom.GetComponent<Room>();
-        newRoom.transform.position = new Vector3(roompos.y * _roomheight, 0, roompos.x * _roomWidth);
+        newRoom.transform.position = new Vector3((roompos.y - 10) * _roomheight,
+         0, (roompos.x - 10) * _roomWidth);
 
         _dungeonRoomList.Add(newRoom);
         return _roomArray[roompos.x, roompos.y];
